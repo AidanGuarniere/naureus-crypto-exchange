@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
+import { TransactionContext } from "../contexts/TransactionContext";
 import { ScreenContext } from "../contexts/ScreenContext";
 import { AiFillPlayCircle } from "react-icons/ai";
 import { SiEthereum } from "react-icons/si";
@@ -22,8 +23,8 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
 
 const Welcome = () => {
   const { screen } = useContext(ScreenContext);
+  const { connectWallet, currentAccount } = useContext(TransactionContext);
 
-  const connectWallet = () => {};
   const handleChange = () => {};
   const handleSubmit = () => {};
 
@@ -38,13 +39,19 @@ const Welcome = () => {
             Naureus is a web application for buying and selling cryptocurrency
             via Solidity smart contracts. Demo use only. By Aidan Guarniere.
           </p>
-          <button
-            type="button"
-            onClick={connectWallet}
-            className="flex flex-row justify-center items-center my-5 bg-[#2952e3] p-3 rounded-full cursor-pointer hover:bg-[#2546bd]"
-          >
-            <p className="text-white text-base font-semibold">Connect Wallet</p>
-          </button>
+          {!currentAccount ? (
+            <button
+              type="button"
+              onClick={connectWallet}
+              className="flex flex-row justify-center items-center my-5 bg-[#2952e3] p-3 rounded-full cursor-pointer hover:bg-[#2546bd]"
+            >
+              <p className="text-white text-base font-semibold">
+                Connect Wallet
+              </p>
+            </button>
+          ) : (
+            <div></div>
+          )}
 
           <div className=" grid sm:grid-cols-3 grid-cols-2 w-full mt-10">
             {screen === "desktop" ? (
@@ -69,12 +76,13 @@ const Welcome = () => {
                   Reliability
                 </div>
                 <div className={`rounded-tr-2xl  ${commonStyles}`}>
-                  Security</div>
-                <div className={commonStyles}>
-                  Ethereum
+                  Security
                 </div>
+                <div className={commonStyles}>Ethereum</div>
                 <div className={commonStyles}>Web 3.0</div>
-                <div className={`rounded-bl-2xl  ${commonStyles}`}>Low Fees</div>
+                <div className={`rounded-bl-2xl  ${commonStyles}`}>
+                  Low Fees
+                </div>
                 <div className={`rounded-br-2xl  ${commonStyles}`}>
                   Blockchain
                 </div>
