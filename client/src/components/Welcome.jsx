@@ -23,10 +23,19 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
 
 const Welcome = () => {
   const { screen } = useContext(ScreenContext);
-  const { connectWallet, currentAccount } = useContext(TransactionContext);
+  const { connectWallet, currentAccount, formData, sendTransaction, handleChange } =
+    useContext(TransactionContext);
 
-  const handleChange = () => {};
-  const handleSubmit = () => {};
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const { addressTo, amount, keyword, message } = formData;
+
+    if (!addressTo || !amount || !keyword || !message) {console.log("problem")};
+
+    console.log("success")
+    sendTransaction();
+  };
 
   return (
     <div className="flex w-full justify-center items-center">
