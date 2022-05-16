@@ -4,7 +4,7 @@ import { ScreenContext } from "../contexts/ScreenContext";
 import { AiFillPlayCircle } from "react-icons/ai";
 import { SiEthereum } from "react-icons/si";
 import { BsInfoCircle } from "react-icons/bs";
-
+import { shortenAddress } from "../utils/shortenAddress";
 import { Loader } from "./";
 
 const commonStyles =
@@ -22,23 +22,52 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
 );
 
 const Welcome = () => {
+  const [addressVisibility, setAddressVisibility] = useState(false);
+  const [copiedAddress, setCopiedAddress] = useState(false);
   const { screen } = useContext(ScreenContext);
-  const { connectWallet, currentAccount, formData, sendTransaction, handleChange } =
-    useContext(TransactionContext);
+  const {
+    connectWallet,
+    currentAccount,
+    formData,
+    sendTransaction,
+    handleChange,
+  } = useContext(TransactionContext);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const { addressTo, amount, keyword, message } = formData;
 
-    if (!addressTo || !amount || !keyword || !message) {console.log("problem")};
+    if (!addressTo || !amount || !keyword || !message) {
+      console.log("problem");
+    }
 
-    console.log("success")
+    console.log("success");
     sendTransaction();
+  };
+
+  const showAddress = () => {
+    setAddressVisibility(!addressVisibility);
+  };
+
+  const copyAddress = (e) => {
+    navigator.clipboard.writeText(e.target.textContent);
+    setCopiedAddress(true);
+    setTimeout(() => {
+      setCopiedAddress(false);
+    }, 2500);
+    setAddressVisibility(!addressVisibility);
   };
 
   return (
     <div className="flex w-full justify-center items-center">
+              {copiedAddress ? (
+          <div className="fixed z-[999] text-white top-20 text-center py-2 px-7 rounded-md w-1/4 h-1/12 bg-[#2952e3]">
+            <p>Address Copied to Clipboard!</p>
+          </div>
+        ) : (
+          null
+        )}
       <div className="flex mf:flex-row flex-col items-start justify-between md:p-20 py-12 px-4">
         <div className=" flex flex-1 justify-start flex-col mf:mr-10">
           <h1 className="text-3xl sm:text-5xl text-white  py-1">
@@ -100,7 +129,7 @@ const Welcome = () => {
           </div>
         </div>
         <div className="flex flex-col flex-1 items-center justify-start w-full mf:mt-0 mt-10">
-          <div className="p-3 flex justify-end items-start flex-col rounded-xl h-40 sm:w-72 w-full my-5 eth-card .white-glassmorphism ">
+          <div className="p-3 flex justify-end items-start flex-col rounded-xl md:h-[216px] sm:h-20 sm:w-72 md:w-[352px]  my-5 eth-card .white-glassmorphism ">
             <div className="flex justify-between flex-col w-full h-full">
               <div className="flex justify-between items-start">
                 <div className="w-10 h-10 rounded-full border-2 border-white flex justify-center items-center">
@@ -109,10 +138,26 @@ const Welcome = () => {
                 <BsInfoCircle fontSize={17} color="#fff" />
               </div>
               <div>
-                <p className="text-white font-light text-sm">
-                  Address
-                  {/* {shortenAddress(currentAccount)} */}
-                </p>
+                <div className="cursor-pointer">
+                  {!addressVisibility ? (
+                    <p
+                      onClick={showAddress}
+                      className="text-white font-light text-sm"
+                    >
+                      {shortenAddress(currentAccount)}
+                    </p>
+                  ) : (
+                    <div
+                      onClick={copyAddress}
+                      onMouseLeave={showAddress}
+                      className="text-center "
+                    ><p className="text-left py-1 text-white text-xs font-light">Click to copy address to clipboard</p>
+                      <p className="text-white font-light text-sm rounded-md border-2 blue-glassmorphism ">
+                        {currentAccount}
+                      </p>
+                    </div>
+                  )}
+                </div>
                 <p className="text-white font-semibold text-lg mt-1">
                   Ethereum
                 </p>
