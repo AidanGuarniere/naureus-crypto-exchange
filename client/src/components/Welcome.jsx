@@ -46,8 +46,12 @@ const Welcome = () => {
     sendTransaction();
   };
 
-  const showAddress = () => {
-    setAddressVisibility(!addressVisibility);
+  const showAddress = (e) => {
+    if (e.target.id === "ethereum-card") {
+      setAddressVisibility(false)
+    } else {
+      setAddressVisibility(!addressVisibility);
+    }
   };
 
   const copyAddress = (e) => {
@@ -70,7 +74,7 @@ const Welcome = () => {
         )}
       <div className="flex mf:flex-row flex-col items-start justify-between md:p-20 py-12 px-4">
         <div className=" flex flex-1 justify-start flex-col mf:mr-10">
-          <h1 className="text-3xl sm:text-5xl text-white  py-1">
+          <h1 className="text-3xl sm:text-5xl text-white  py-3">
             Send Crypto <br /> across the world
           </h1>
           <p className="text-left mt-5 text-white font-light md:w-9/12 w-11/12 text-base">
@@ -129,7 +133,7 @@ const Welcome = () => {
           </div>
         </div>
         <div className="flex flex-col flex-1 items-center justify-start w-full mf:mt-0 mt-10">
-          <div className="p-3 flex justify-end items-start flex-col rounded-xl md:h-[216px] sm:h-20 sm:w-72 md:w-[352px]  my-5 eth-card .white-glassmorphism ">
+          <div id="ethereum-card" onMouseLeave={addressVisibility === true? showAddress : null} className="p-3 flex justify-end items-start flex-col rounded-xl md:h-[216px] sm:h-20 sm:w-72 md:w-[352px]  my-5 eth-card .white-glassmorphism ">
             <div className="flex justify-between flex-col w-full h-full">
               <div className="flex justify-between items-start">
                 <div className="w-10 h-10 rounded-full border-2 border-white flex justify-center items-center">
@@ -149,7 +153,6 @@ const Welcome = () => {
                   ) : (
                     <div
                       onClick={copyAddress}
-                      onMouseLeave={showAddress}
                       className="text-center "
                     ><p className="text-left py-1 text-white text-xs font-light">Click to copy address to clipboard</p>
                       <p className="text-white font-light text-sm rounded-md border-2 blue-glassmorphism ">
