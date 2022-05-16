@@ -48,7 +48,7 @@ const Welcome = () => {
 
   const showAddress = (e) => {
     if (e.target.id === "ethereum-card") {
-      setAddressVisibility(false)
+      setAddressVisibility(false);
     } else {
       setAddressVisibility(!addressVisibility);
     }
@@ -65,13 +65,11 @@ const Welcome = () => {
 
   return (
     <div className="flex w-full justify-center items-center">
-              {copiedAddress ? (
-          <div className="fixed z-[999] text-white top-20 text-center py-2 px-7 rounded-md w-1/4 h-1/12 bg-[#2952e3]">
-            <p>Address Copied to Clipboard!</p>
-          </div>
-        ) : (
-          null
-        )}
+      {copiedAddress ? (
+        <div className="fixed z-[999] text-white top-20 text-center py-2 px-7 rounded-md w-1/4 h-1/12 bg-[#2952e3]">
+          <p>Address Copied to Clipboard!</p>
+        </div>
+      ) : null}
       <div className="flex mf:flex-row flex-col items-start justify-between md:p-20 py-12 px-4">
         <div className=" flex flex-1 justify-start flex-col mf:mr-10">
           <h1 className="text-3xl sm:text-5xl text-white  py-3">
@@ -133,7 +131,11 @@ const Welcome = () => {
           </div>
         </div>
         <div className="flex flex-col flex-1 items-center justify-start w-full mf:mt-0 mt-10">
-          <div id="ethereum-card" onMouseLeave={addressVisibility === true? showAddress : null} className="p-3 flex justify-end items-start flex-col rounded-xl md:h-[216px] sm:h-20 sm:w-72 md:w-[352px]  my-5 eth-card .white-glassmorphism ">
+          <div
+            id="ethereum-card"
+            onMouseLeave={addressVisibility === true ? showAddress : null}
+            className="p-3 flex justify-end items-start flex-col rounded-xl md:h-[216px] sm:h-20 sm:w-72 md:w-[352px]  my-5 eth-card .white-glassmorphism "
+          >
             <div className="flex justify-between flex-col w-full h-full">
               <div className="flex justify-between items-start">
                 <div className="w-10 h-10 rounded-full border-2 border-white flex justify-center items-center">
@@ -151,10 +153,10 @@ const Welcome = () => {
                       {shortenAddress(currentAccount)}
                     </p>
                   ) : (
-                    <div
-                      onClick={copyAddress}
-                      className="text-center "
-                    ><p className="text-left py-1 text-white text-xs font-light">Click to copy address to clipboard</p>
+                    <div onClick={copyAddress} className="text-center ">
+                      <p className="text-left py-1 text-white text-xs font-light">
+                        Click to copy address to clipboard
+                      </p>
                       <p className="text-white font-light text-sm rounded-md border-2 blue-glassmorphism ">
                         {currentAccount}
                       </p>
@@ -178,6 +180,8 @@ const Welcome = () => {
               placeholder="Amount (ETH)"
               name="amount"
               type="number"
+              min="0"
+              value={formData.amount}
               handleChange={handleChange}
             />
             <Input
