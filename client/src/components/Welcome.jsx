@@ -181,6 +181,7 @@ const Welcome = () => {
               name="amount"
               type="number"
               min="0"
+              max="999.99999999"
               value={formData.amount}
               handleChange={handleChange}
             />

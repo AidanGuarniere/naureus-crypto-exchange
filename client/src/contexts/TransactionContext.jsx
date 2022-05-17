@@ -33,18 +33,60 @@ export const TransactionProvider = ({ children }) => {
     console.log(formData);
   }, [formData]);
 
+  const getAllTransactions = async () => {
+    try {
+      if (!ethereum) return alert("Please install metamask");
+      const transactionContract = getEthereumContract();
+
+      const availableTransacitons =
+        await transactionContract.getAllTransactions();
+      console.log(availableTransacitons);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   // update formData based off of form input name
   const handleChange = (e, name) => {
     if (name === "amount") {
-      const targetValue = parseFloat(e.target.value);
-      if (targetValue > 0) {
-        setFormData((prevState) => ({ ...prevState, [name]: e.target.value }));
-      } else if (targetValue.length === 0) {
-        console.log("hey")
-        setFormData((prevState) => ({ ...prevState, [name]: ""}));
+      if (e.target.value.length <= 12) {
+        // allow a number up to 999.99999999
+        const amountRegex = new RegExp("^([0-9]+.?[0-9]*|.[0-9]+)$");
+
+        if (amountRegex.test(e.target.value) === true) {
+          console.log(amountRegex.test(e.target.value));
+          setFormData((prevState) => ({
+            ...prevState,
+            [name]: e.target.value.replace(/-/g, ""),
+          }));
+          // const isNegative = Math.sign(parseFloat(e.target.value));
+          // if (isNegative === 1 || isNegative === 0) {
+          //   setFormData((prevState) => ({
+          //     ...prevState,
+          //     [name]: e.target.value,
+          //   }));
+        } else if (e.target.value.length === 0) {
+          console.log(0);
+          setFormData((prevState) => ({ ...prevState, [name]: "" }));
+        } else {
+          console.log("hypen");
+          setFormData((prevState) => ({
+            ...prevState,
+            [name]: e.target.value.replace(/-/g, ""),
+          }));
+        }
       } else {
-        setFormData((prevState) => ({ ...prevState, [name]: 0 }));
+        console.log("overlength");
+        setFormData((prevState) => ({
+          ...prevState,
+          [name]: prevState.amount,
+        }));
       }
+      // } else {
+      //   setFormData((prevState) => ({
+      //     ...prevState,
+      //     [name]: prevState.amount,
+      //   }));
+      // }
     } else {
       console.log("other");
       setFormData((prevState) => ({ ...prevState, [name]: e.target.value }));
@@ -56,11 +98,28 @@ export const TransactionProvider = ({ children }) => {
     try {
       if (accounts.length) {
         setCurrentAccount(accounts[0]);
+        getAllTransactions();
 
         //getAllTransactions();
       } else {
         console.log("no accounts found");
       }
+    } catch (error) {
+      console.log(error);
+
+      throw new Error("No ethereum object in window");
+    }
+  };
+
+  const checkTransactions = async () => {
+    try {
+      const transactionContract = getEthereumContract();
+
+      const transactionCountNumber =
+        await transactionContract.getTransactionCount();
+
+      //replace w api call
+      window.localStorage.setItem("transactionCount", transactionCountNumber);
     } catch (error) {
       console.log(error);
 
@@ -131,6 +190,7 @@ export const TransactionProvider = ({ children }) => {
   };
   useEffect(() => {
     checkWalletConnection();
+    checkTransactions();
   }, []);
 
   return (
