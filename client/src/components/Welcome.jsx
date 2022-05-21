@@ -31,6 +31,7 @@ const Welcome = () => {
     formData,
     sendTransaction,
     handleChange,
+    loading,
   } = useContext(TransactionContext);
 
   const handleSubmit = (e) => {
@@ -75,8 +76,8 @@ const Welcome = () => {
           <h1 className="text-3xl sm:text-5xl text-white  py-3">
             Send Crypto <br /> across the world
           </h1>
-          <p className="text-left mt-5 text-white font-light md:w-9/12 w-11/12 text-base">
-            Naureus is a web application for buying and selling cryptocurrency
+          <p className="text-left mt-5 text-white font-light md:w-10/12 w-11/12 text-lg">
+            Naureus is a web application for facilitating and recording Ethereum transactions
             via Solidity smart contracts. Demo use only. By Aidan Guarniere.
           </p>
           {!currentAccount ? (
@@ -145,22 +146,31 @@ const Welcome = () => {
               </div>
               <div>
                 <div className="cursor-pointer">
-                  {!addressVisibility ? (
+                  {currentAccount ? (
+                    !addressVisibility ? (
+                      <p
+                        onClick={showAddress}
+                        className="text-white font-light text-sm"
+                      >
+                        {shortenAddress(currentAccount)}
+                      </p>
+                    ) : (
+                      <div onClick={copyAddress} className="text-center ">
+                        <p className="text-left py-1 text-white text-xs font-light">
+                          Click to copy address to clipboard
+                        </p>
+                        <p className="text-white font-light text-sm rounded-md border-2 blue-glassmorphism ">
+                          {currentAccount}
+                        </p>
+                      </div>
+                    )
+                  ) : (
                     <p
-                      onClick={showAddress}
+                      onClick={connectWallet}
                       className="text-white font-light text-sm"
                     >
-                      {shortenAddress(currentAccount)}
+                      Connect your MetaMask Account to view address
                     </p>
-                  ) : (
-                    <div onClick={copyAddress} className="text-center ">
-                      <p className="text-left py-1 text-white text-xs font-light">
-                        Click to copy address to clipboard
-                      </p>
-                      <p className="text-white font-light text-sm rounded-md border-2 blue-glassmorphism ">
-                        {currentAccount}
-                      </p>
-                    </div>
                   )}
                 </div>
                 <p className="text-white font-semibold text-lg mt-1">
@@ -200,7 +210,7 @@ const Welcome = () => {
 
             <div className="h-[1px] w-full bg-gray-400 my-2" />
 
-            {false ? (
+            {loading ? (
               <Loader />
             ) : (
               <button

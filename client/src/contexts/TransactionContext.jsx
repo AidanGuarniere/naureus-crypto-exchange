@@ -18,6 +18,7 @@ const getEthereumContract = () => {
 
 export const TransactionProvider = ({ children }) => {
   const [currentAccount, setCurrentAccount] = useState("");
+  const [transactions, setTransactions] = useState([]);
   const [formData, setFormData] = useState({
     addressTo: "",
     amount: "",
@@ -29,9 +30,9 @@ export const TransactionProvider = ({ children }) => {
   const [transactionCount, setTransactionCount] = useState(
     localStorage.getItem("transactionCount")
   );
-  useEffect(() => {
-    console.log(formData);
-  }, [formData]);
+  // useEffect(() => {
+  //   console.log(formData);
+  // }, [formData]);
 
   const getAllTransactions = async () => {
     try {
@@ -40,7 +41,19 @@ export const TransactionProvider = ({ children }) => {
 
       const availableTransacitons =
         await transactionContract.getAllTransactions();
-      console.log(availableTransacitons);
+      console.log(availableTransacitons[0].timestamp.toNumber() * 1000);
+      const structuredTransactions = availableTransacitons.map(
+        (transaction) => ({
+          addressFrom: transaction.sender,
+          addressTo: transaction[1],
+          timestamp: new Date(transaction.timestamp.toNumber() * 1000).toLocaleString(),
+          message: transaction.message,
+          keyword: transaction.keyword,
+          amount: parseInt(transaction.amount._hex) / 10 ** 18,
+        })
+      );
+      console.log(structuredTransactions);
+      setTransactions(structuredTransactions);
     } catch (error) {
       console.log(error);
     }
@@ -201,6 +214,9 @@ export const TransactionProvider = ({ children }) => {
         formData,
         sendTransaction,
         handleChange,
+        transactions,
+        loading,
+        setLoading,
       }}
     >
       {children}
