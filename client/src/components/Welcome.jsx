@@ -40,10 +40,9 @@ const Welcome = () => {
     const { addressTo, amount, keyword, message } = formData;
 
     if (!addressTo || !amount || !keyword || !message) {
-      console.log("problem");
+      console.log(e);
     }
 
-    console.log("success");
     sendTransaction();
   };
 
@@ -77,8 +76,12 @@ const Welcome = () => {
             Send Crypto <br /> across the world
           </h1>
           <p className="text-left mt-5 text-white font-light md:w-10/12 w-11/12 text-lg">
-            Naureus is a web application for facilitating and recording Ethereum transactions
-            via Solidity smart contracts. Demo use only. By Aidan Guarniere.
+            Naureus is a web application for facilitating and recording Ethereum
+            transactions on the Goleri test network via Solidity smart
+            contracts. Demo use only. By Aidan Guarniere.
+          </p>
+          <p className="text-left mt-5 text-white font-light md:w-10/12 w-11/12 text-lg">
+            Demo Address: 0xefa949147e7d66373fc14a5525c86ff328f45f85
           </p>
           {!currentAccount ? (
             <button

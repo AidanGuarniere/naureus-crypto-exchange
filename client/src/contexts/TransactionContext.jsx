@@ -30,9 +30,6 @@ export const TransactionProvider = ({ children }) => {
   const [transactionCount, setTransactionCount] = useState(
     localStorage.getItem("transactionCount")
   );
-  // useEffect(() => {
-  //   console.log(formData);
-  // }, [formData]);
 
   const getAllTransactions = async () => {
     try {
@@ -46,7 +43,35 @@ export const TransactionProvider = ({ children }) => {
         (transaction) => ({
           addressFrom: transaction.sender,
           addressTo: transaction[1],
-          timestamp: new Date(transaction.timestamp.toNumber() * 1000).toLocaleString(),
+          timestamp: new Date(
+            transaction.timestamp.toNumber() * 1000
+          ).toLocaleString(),
+          message: transaction.message,
+          keyword: transaction.keyword,
+          amount: parseInt(transaction.amount._hex) / 10 ** 18,
+        })
+      );
+      console.log(structuredTransactions);
+      setTransactions(structuredTransactions);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getUserTransactions = async () => {
+    try {
+      if (!ethereum) return alert("Please install metamask");
+      const transactionContract = getEthereumContract();
+      const availableTransacitons =
+        await transactionContract.getUserTransactions();
+      console.log(availableTransacitons);
+      const structuredTransactions = availableTransacitons.map(
+        (transaction) => ({
+          addressFrom: transaction.sender,
+          addressTo: transaction[1],
+          timestamp: new Date(
+            transaction.timestamp.toNumber() * 1000
+          ).toLocaleString(),
           message: transaction.message,
           keyword: transaction.keyword,
           amount: parseInt(transaction.amount._hex) / 10 ** 18,
@@ -111,9 +136,8 @@ export const TransactionProvider = ({ children }) => {
     try {
       if (accounts.length) {
         setCurrentAccount(accounts[0]);
-        getAllTransactions();
-
-        //getAllTransactions();
+        // getAllTransactions();
+        getUserTransactions();
       } else {
         console.log("no accounts found");
       }
@@ -154,6 +178,10 @@ export const TransactionProvider = ({ children }) => {
 
       throw new Error("No ethereum object in window");
     }
+  };
+
+  const disconnectWallet = async () => {
+    setCurrentAccount(null);
   };
 
   const sendTransaction = async () => {
@@ -210,6 +238,7 @@ export const TransactionProvider = ({ children }) => {
     <TransactionContext.Provider
       value={{
         connectWallet,
+        disconnectWallet,
         currentAccount,
         formData,
         sendTransaction,

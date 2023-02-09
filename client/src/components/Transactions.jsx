@@ -2,21 +2,16 @@ import React, { useContext, useEffect } from "react";
 import { TransactionContext } from "../contexts/TransactionContext";
 import { shortenAddress } from "../utils/shortenAddress";
 import dummyData from "../utils/dummyData";
-const TransactionCard = ({
-  transaction, currentAccount
-}) => {
-
-  
+const TransactionCard = ({ transaction, currentAccount }) => {
   const time = transaction.timestamp.toString();
 
   const isUser = (address) => {
-    console.log(address)
     if (address.toLowerCase() === currentAccount) {
-      return "You"
+      return "You";
     } else {
-      return shortenAddress(address)
+      return shortenAddress(address);
     }
-  }
+  };
   return (
     <div
       className="
@@ -49,7 +44,9 @@ const TransactionCard = ({
               To: {isUser(transaction.addressTo)}
             </p>
           </a>
-          <p className="text-white text-base">Amount: {transaction.amount} ETH</p>
+          <p className="text-white text-base">
+            Amount: {transaction.amount} ETH
+          </p>
           <p className="text-white text-base"> {time}</p>
         </div>
       </div>
@@ -72,9 +69,25 @@ const Transactions = () => {
           </h3>
         )}
         <div className="flex flex-wrap justify-center items-center mt-10">
-          {transactions.reverse().map((transaction, i) => (
-            <TransactionCard key={transaction.addressFrom+i} transaction={transaction} currentAccount={currentAccount}/>
-          ))}
+          {
+          // transactions.length > 1 ? (
+            transactions
+              .reverse()
+              .map((transaction, i) => (
+                <TransactionCard
+                  key={transaction.addressFrom + i}
+                  transaction={transaction}
+                  currentAccount={currentAccount}
+                />
+              ))
+          // ) : (
+          //   <TransactionCard
+          //     key={transactions.addressFrom + 0}
+          //     transaction={transactions}
+          //     currentAccount={currentAccount}
+          //   />
+          // )
+          }
         </div>
       </div>
     </div>
